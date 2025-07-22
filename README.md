@@ -86,6 +86,7 @@ function cartReducer(state, action) {
       return state;
   }
 }
+
 4. Inizializza lo stato con un array vuoto e usa useReducer per gestire le azioni del carrello.
 
 <strong>Obiettivo:</strong> Migliorare la struttura del codice utilizzando un approccio più scalabile e organizzato.
