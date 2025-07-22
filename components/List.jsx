@@ -12,15 +12,29 @@ const List = () => {
     ];
     // lista prodotti del carrello
     const [addedProducts, setAddedProducts] = useState([]);
+    // funzione per aumentare la quantità
+    const updateProductQuantity = (name, quantity) => { setAddedProducts(curr => curr.map(p => p.name === name ? { ...p, quantity } : p)) }
+
+    // funzione per rimuovere dal carrello
+    const removeFromCart = (product) => {
+        setAddedProducts(curr => curr.filter(p => p.name !== product.name))
+    }
+
+    // totale prezzo del carrello
+    const [totalPrice, setTotalPrice] = useState(0);
 
     // funzione per aggiungere i prodotti al carrello
     const addToCart = product => {
-        const aggiunto = addedProducts.some(p => p.name === product.name)
+        const aggiunto = addedProducts.find(p => p.name === product.name)
         if (aggiunto) {
+            updateProductQuantity(aggiunto.name, aggiunto.quantity + 1);
+            setTotalPrice(prev => prev + product.price)
             return;
         }
         setAddedProducts(curr => [...curr, { ...product, quantity: 1 }])
+        setTotalPrice(prev => prev + product.price)
     }
+
 
     return (
         <div>
@@ -29,7 +43,7 @@ const List = () => {
                     // genero la lista dei prodotti con map
                     products.map((p, i) => {
                         return <li key={i}>
-                            <p><b>Prodotto:</b> {p.name} - <b>Prezzo:</b> {p.price} &euro; <button onClick={() => addToCart(p)} >Aggiungi al carrello</button></p>
+                            <p><b>Prodotto:</b> {p.name} - <b>Prezzo:</b> {p.price} &euro; <button onClick={() => addToCart(p)} >Aggiungi al carrello</button> <button onClick={() => removeFromCart(p)}>Rimuovi dal carrello </button></p>
                         </li>
                     })
                 }
@@ -46,6 +60,7 @@ const List = () => {
                     })
                 }
             </ul>
+            <div>Totale : {totalPrice.toFixed(2)}&euro;</div>
         </div>
     )
 }
