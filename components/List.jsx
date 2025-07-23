@@ -13,7 +13,12 @@ const List = () => {
     // lista prodotti del carrello
     const [addedProducts, setAddedProducts] = useState([]);
     // funzione per aumentare la quantità
-    const updateProductQuantity = (name, quantity) => { setAddedProducts(curr => curr.map(p => p.name === name ? { ...p, quantity } : p)) }
+    const updateProductQuantity = (name, quantity) => {
+        if (quantity < 1 || isNaN(quantity)) {
+            return;
+        }
+        setAddedProducts(curr => curr.map(p => p.name === name ? { ...p, quantity } : p))
+    }
 
     // funzione per rimuovere dal carrello
     const removeFromCart = (product) => {
@@ -21,7 +26,8 @@ const List = () => {
     }
 
     // totale prezzo del carrello
-    const [totalPrice, setTotalPrice] = useState(0);
+    const totalPrice = addedProducts.reduce(
+        (sum, item) => sum + item.price * item.quantity, 0);
 
     // funzione per aggiungere i prodotti al carrello
     const addToCart = product => {
@@ -43,7 +49,9 @@ const List = () => {
                     // genero la lista dei prodotti con map
                     products.map((p, i) => {
                         return <li key={i}>
-                            <p><b>Prodotto:</b> {p.name} - <b>Prezzo:</b> {p.price} &euro; <button onClick={() => addToCart(p)} >Aggiungi al carrello</button> <button onClick={() => removeFromCart(p)}>Rimuovi dal carrello </button></p>
+                            <p><b>Prodotto:</b> {p.name} - <b>Prezzo:</b> {p.price} &euro; <button
+                                onClick={() => addToCart(p)} >Aggiungi al carrello</button>
+                                <button onClick={() => removeFromCart(p)}>Rimuovi dal carrello </button></p>
                         </li>
                     })
                 }
@@ -55,7 +63,9 @@ const List = () => {
                     // genero la lista dei prodotti nel carrello 
                     addedProducts.map((a, i) => {
                         return <li key={i}>
-                            <p><b>{a.quantity} x Prodotto:</b> {a.name} - <b>Prezzo:</b> {a.price} &euro;</p>
+                            <p><b><input type="number" value={a.quantity}
+                                onChange={e => updateProductQuantity(a.name, parseInt(e.target.value))}
+                            /> x Prodotto:</b> {a.name} - <b>Prezzo:</b> {a.price} &euro;</p>
                         </li>
                     })
                 }
